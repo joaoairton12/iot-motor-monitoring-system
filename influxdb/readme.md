@@ -3,7 +3,7 @@
 Consultas Flux utilizadas nos painéis do Grafana para visualização dos dados.
 
 
-## Status do ESP32 (Gauge)
+## Status do ESP32
 
 Retorna o último estado conhecido do ESP32 utilizando as mensagens publicadas pelo mecanismo Last Will and Testament (LWT) do MQTT.
 
