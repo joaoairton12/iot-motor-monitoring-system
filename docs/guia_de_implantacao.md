@@ -437,6 +437,10 @@ No Grafana:
 4. carregar o arquivo `dashboard.json`;
 6. concluir a importação.
 
+As consultas que foram utilizadas em cada painel esão disponíveis no arquivio :
+
+💻 **[Consultas Flux](influxdb/README.md)**
+
 ---
 
 ## Problemas Comuns
