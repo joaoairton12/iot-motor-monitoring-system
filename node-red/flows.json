@@ -1,0 +1,218 @@
+[
+    {
+        "id": "f6f2187d.f17ca8",
+        "type": "tab",
+        "label": "telemetria_motor",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "15fd3dd4780d7d4e",
+        "type": "debug",
+        "z": "f6f2187d.f17ca8",
+        "name": "debug",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 550,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "9f4f2fc36718b96e",
+        "type": "mqtt in",
+        "z": "f6f2187d.f17ca8",
+        "name": "HiveMQ Cloud",
+        "topic": "tcc/motor/telemetria",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "2fda3e82b3e6c463",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 160,
+        "y": 80,
+        "wires": [
+            [
+                "c6ba53eb168e80ba"
+            ]
+        ]
+    },
+    {
+        "id": "6cf017fed0f18e61",
+        "type": "influxdb out",
+        "z": "f6f2187d.f17ca8",
+        "influxdb": "00bd5dbcdbfda528",
+        "name": "InfluxDB Desktop",
+        "measurement": "grandezas_eletricas",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "UNIAVAN",
+        "bucket": "monitoramento_motores",
+        "x": 590,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "c6ba53eb168e80ba",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "Tratamento do payload",
+        "func": "// ========================= NODE-RED FUNCTION =========================\n// Tratamento do payload CSV enviado pelo ESP32\n// Estrutura: 9 medições + 3 flags de validade + RSSI\n// =====================================================================\n\nconst raw = msg.payload.toString().trim().split(\",\");\n\n// ===== Validação =====\nif (raw.length !== 13) {\n    node.error(`[ERRO] Payload inválido. Recebidos ${raw.length}, esperado 13`);\n    return null;\n}\n\n// ===== Conversão =====\nconst d = raw.map(v => parseFloat(v));\n\n// ===== Validação de campo =====\nfunction campoInvalido(v) {\n    return Number.isNaN(v) || v === -1;\n}\n\n// ===== Conversão segura =====\nfunction valor(v) {\n    return campoInvalido(v) ? null : v;\n}\n\n// ======================== CAMPOS ========================\nlet fields = {\n\n    // ===== FASE R =====\n    tensao_r: valor(d[0]),\n    corrente_r: valor(d[1]),\n    potencia_r: valor(d[2]),\n\n    // ===== FASE S =====\n    tensao_s: valor(d[3]),\n    corrente_s: valor(d[4]),\n    potencia_s: valor(d[5]),\n\n    // ===== FASE T =====\n    tensao_t: valor(d[6]),\n    corrente_t: valor(d[7]),\n    potencia_t: valor(d[8]),\n\n    // ===== FLAGS DE VALIDADE =====\n    valido_r: d[9],\n    valido_s: d[10],\n    valido_t: d[11],\n\n    // ===== RSSI =====\n    rssi: Number.isFinite(d[12]) ? Math.round(d[12]) : 0\n};\n\n// ================= POTÊNCIA TOTAL =================\nif (\n    fields.potencia_r !== null &&\n    fields.potencia_s !== null &&\n    fields.potencia_t !== null\n) {\n    fields.potencia_total =\n        fields.potencia_r +\n        fields.potencia_s +\n        fields.potencia_t;\n} else {\n    fields.potencia_total = null;\n}\n\n// ================= TAGS =================\nlet tags = {\n    dispositivo: \"ESP32_TCC_UNIAVAN\",\n    tipo_carga: \"motor_eletrico\"\n};\n\n// ================= SAÍDA =================\nmsg.payload = [fields, tags];\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 220,
+        "wires": [
+            [
+                "15fd3dd4780d7d4e",
+                "6cf017fed0f18e61"
+            ]
+        ]
+    },
+    {
+        "id": "ce9b9609cc4b42ab",
+        "type": "mqtt in",
+        "z": "f6f2187d.f17ca8",
+        "name": "Status do Sistema",
+        "topic": "tcc/motor/status",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "2fda3e82b3e6c463",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 130,
+        "y": 400,
+        "wires": [
+            [
+                "3b5f3d8b0943ac66"
+            ]
+        ]
+    },
+    {
+        "id": "9511a834bf2f664a",
+        "type": "debug",
+        "z": "f6f2187d.f17ca8",
+        "name": "debug",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 450,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "3b5f3d8b0943ac66",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "LWT",
+        "func": "// =============================================\n// NODE-RED - STATUS LWT - Last Will and Testament\n// =============================================\n\nconst status = msg.payload.toString().trim().toLowerCase();\n\nlet fields = {\n    esp_online: (status === \"online\") ? 1 : 0\n};\n\nlet tags = {\n    dispositivo: \"ESP32_TCC_UNIAVAN\"\n};\n\nmsg.payload = [fields, tags];\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 290,
+        "y": 540,
+        "wires": [
+            [
+                "9511a834bf2f664a",
+                "54b6ec98ff39d3c2"
+            ]
+        ]
+    },
+    {
+        "id": "54b6ec98ff39d3c2",
+        "type": "influxdb out",
+        "z": "f6f2187d.f17ca8",
+        "influxdb": "00bd5dbcdbfda528",
+        "name": "InfluxDB Desktop",
+        "measurement": "status_esp32",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "UNIAVAN",
+        "bucket": "monitoramento_motores",
+        "x": 490,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "2fda3e82b3e6c463",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "39dee4b9ba64439997bc849ccebd56fb.s1.eu.hivemq.cloud",
+        "port": "8883",
+        "tls": "",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": true,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "00bd5dbcdbfda528",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": 8086,
+        "protocol": "http",
+        "database": "database",
+        "name": "",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "2.0",
+        "url": "http://InfluxDB:8086",
+        "timeout": 10,
+        "rejectUnauthorized": true
+    },
+    {
+        "id": "757a300ea8215ff3",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-contrib-influxdb": "0.7.0"
+        }
+    }
+]
