@@ -6,17 +6,17 @@ Este documento apresenta o procedimento completo para reprodução e implantaç�
 
 ## 1. Pré-Requisitos
 
-Antes de iniciar a implantação, é necessário possuir:
+Antes de iniciar, é necessário possuir:
 
 * ESP32;
-* módulos PZEM-004T v4.0;
-* cabos para conexão;
-* fonte de alimentação adequada;
-* computador com Docker Desktop instalado;
+* Módulos PZEM-004T v4.0;
+* Cabos para conexão;
+* Fonte de alimentação 5V;
+* Computador com Docker Desktop instalado;
 * Arduino IDE instalada;
-* conta no HiveMQ Cloud;
-* acesso à internet;
-* repositório do projeto clonado localmente.
+* Conta no HiveMQ Cloud;
+* Acesso à internet;
+* Repositório do projeto clonado localmente.
 
 ---
 
