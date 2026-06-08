@@ -138,7 +138,7 @@ Após a criação da instância HiveMQ Cloud, é necessário criar as credenciai
 4. Informe um nome de usuário para autenticação.
 5. Defina uma senha segura.
 6. Selecione o tipo de permissão
-7. Clique em **Add Credentials** para concluir o cadastro.
+7. Clique em **Save** para concluir o cadastro.
 
 As credenciais criadas serão utilizadas posteriormente no arquivo `secrets.h` do firmware.
 
