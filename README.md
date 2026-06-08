@@ -78,7 +78,7 @@ O Node-RED é responsável por:
 
 ---
 
-## Estrutura de Armazenamento
+## Estrutura de Armazenamento no InfluxDB
 
 ### Measurement
 
@@ -154,11 +154,11 @@ Os resultados experimentais, metodologia detalhada e análise estatística encon
 
 ## Reprodução do Projeto
 
-As instruções necessárias para reprodução da solução proposta neste trabalho estão disponíveis no documento:
+As instruções necessárias para reprodução da solução proposta neste trabalho estão disponíveis no documento abaixo:
 
 💻⚙ **[Guia de Implantação](docs/guia_de_implantacao.md)**
 
-O guia contempla a montagem física do protótipo, configuração do firmware do ESP32, criação da infraestrutura MQTT, implantação dos serviços Node-RED, InfluxDB e Grafana, bem como a integração entre todos os componentes da arquitetura.
+O guia contempla a montagem física, configuração do firmware do ESP32, criação da infraestrutura MQTT, implantação dos serviços Node-RED, InfluxDB e Grafana, bem como a integração entre todos os componentes da arquitetura.
 
 ---
 
