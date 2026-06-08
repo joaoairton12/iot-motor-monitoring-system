@@ -1,6 +1,6 @@
 # Consultas InfluxDB
 
-Consultas Flux utilizadas nos painéis do Grafana para visualização dos dados do sistema de monitoramento elétrico de motores.
+Consultas Flux utilizadas nos painéis do Grafana para visualização dos dados.
 
 
 ## Status do ESP32 (Gauge)
@@ -164,6 +164,5 @@ from(bucket: "monitoramento_motores")
 
 Quando o ESP32 estiver desligado ou sem comunicação com o broker MQTT, os gráficos de telemetria poderão exibir "No data", uma vez que não existem novas medições sendo recebidas.
 
-Para evitar ambiguidades, o estado operacional do sistema é monitorado separadamente através da consulta de status baseada no mecanismo LWT do MQTT.
-
 Os painéis Stat utilizam consultas com `last()` e janela fixa de 24 horas para exibir o último valor conhecido mesmo quando o dispositivo estiver offline.
+
