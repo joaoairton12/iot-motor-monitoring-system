@@ -441,7 +441,7 @@ As consultas que foram utilizadas em cada painel estão disponíveis no arquivo 
 
 💻 **[Consultas Flux](../influxdb/README.md)**
 
-📄 **[Consultas Flux](../influxdb/readme.md)*
+📄 **[Consultas Flux](../influxdb/readme.md)**
 
 ---
 
